@@ -1,8 +1,13 @@
-#include "Lifeguard.h"
+#include <chrono>
+#include <ctime>
+#include <thread> // For thread
+#include <atomic> // For atomic
+#include <mutex>  // For mutex
 
 #ifndef LIFEGUARD_APP_CLOCKTHREAD_CPP
 #define LIFEGUARD_APP_CLOCKTHREAD_CPP
 
+//Structure so i can use the TimeData in other threads
 struct TimeData {
     int year;
     int month;

@@ -4,6 +4,29 @@
 #ifndef LIFEGUARD_APP_LIBRARY_CPP
 #define LIFEGUARD_APP_LIBRARY_CPP
 
+void printtime();
+
+string opt();
+
+void list(vector<Lifeguard> &rot);
+
+void add(vector<Lifeguard> &rot, TimeData timeData);
+
+void remove(vector<Lifeguard> &rot);
+
+void updateList(vector<Lifeguard> &rot);
+
+void sortList(vector<Lifeguard> &rot);
+
+void SwapKnownLifeguards(vector<Lifeguard> &rot, int num1, int num2);
+
+void ending();
+
+void swap(vector<Lifeguard> &rot);
+
+
+//Prints the time
+//curretnly not in use because i don't have a good place to put it yet
 void printtime() {
     auto now = std::chrono::system_clock::now();
 
@@ -12,83 +35,54 @@ void printtime() {
     std::cout << std::ctime(&time);
 }
 
+
+//Function to print the choices as well as grab their choice
 string opt() {
     string input;
     cout << "What do you want to do?\n"
             "  List rotation (list)\n"
             "  Add Lifeguard (add)\n"
             "  Remove lifeguard (remove)\n"
-            "  Swap Lifeguards (swap)\n";
+            "  Swap Lifeguards (swap)\n"
+            "  End Program (end)\n";
     cin >> input;
 
     return input;
 }
 
-//void list(vector<Lifeguard> &rot) {
-//    printtime();
-//    cout << endl;
-//    for (int i = 0; i < rot.size(); i++) {
-//        cout << rot[i].printLifeguard() << endl;
-//    }
-//}
 
-void list(vector<Lifeguard> &rot){
-    char choice;
-
-    while (true) {
-        system("cls"); // Use "cls" instead of "clear" on Windows
-
-        // Print your constantly updating list here
-        printtime();
-        for (int i = 0; i < rot.size(); i++) {
-            cout << rot[i].printLifeguard() << endl;
-        }
-
-        std::this_thread::sleep_for(std::chrono::seconds(2));
-
-        // Check for user input to exit
-        if (std::cin.peek() != '\n') {
-            std::cout << "Press 'x' to exit or any other key to continue: ";
-            std::cin >> choice;
-            if (choice == 'x' || choice == 'X') {
-                break; // Exit the loop
-            }
-        }
+//Lists out the entire rotation
+//Showing the name of the lifeguard and when they get on
+void list(vector<Lifeguard> &rot) {
+    cout << endl;
+    for (int i = 0; i < rot.size(); i++) {
+        cout << rot[i].printLifeguard() << endl;
     }
+    ending();
 }
 
+
+//Adds lifeguard to the rotation
+//Set's when they go on as well
 void add(vector<Lifeguard> &rot, TimeData timeData) {
+    string name;
 
-    if (rot.size() == 0) {
-        string name;
+    cout << "What is the name of the lifeguard?" << endl;
+    cin >> name;
+    Lifeguard temp(name, timeData.hour, timeData.minute);
 
-        cout << "What is the name of the lifeguard?" << endl;
-        cin >> name;
-        Lifeguard temp(name, timeData.hour, timeData.minute);
+    rot.push_back(temp);
 
-        rot.push_back(temp);
+    updateList(rot);
 
-        cout << endl;
-    } else {
-        string name;
-        int hour;
-        int minutes;
+    cout << endl;
 
-        cout << "What is the name of the lifeguard?" << endl;
-        cin >> name;
-        if (timeData.hour >= 12) {
-            hour = rot[(rot.size() - 1)].getHour() + 12;
-        }
-        minutes = rot[(rot.size() - 1)].getMin();
-        minutes += 30;
-        Lifeguard temp(name, hour, minutes);
-
-        rot.push_back(temp);
-
-        cout << endl;
-    }
+    cout << "Added Lifeguard to the List" << endl;
+    ending();
 }
 
+
+//Removes lifeguard from the rotation
 void remove(vector<Lifeguard> &rot) {
     string name;
     cout << "Who needs to be removed?" << endl;
@@ -102,9 +96,12 @@ void remove(vector<Lifeguard> &rot) {
         }
     }
     cout << endl;
+    ending();
 }
 
-void swap(vector<Lifeguard> &rot){
+
+//Swaps Two guards based on the names
+void swap(vector<Lifeguard> &rot) {
     string name1, name2;
     int num1, num2;
 
@@ -114,11 +111,11 @@ void swap(vector<Lifeguard> &rot){
     cout << "Who is the other Lifeguard?" << endl;
     cin >> name2;
 
-    for(int i = 0; i < rot.size(); i++){
-        if(rot[i].getName() == name1){
+    for (int i = 0; i < rot.size(); i++) {
+        if (rot[i].getName() == name1) {
             num1 = i;
         }
-        if(rot[i].getName() == name2){
+        if (rot[i].getName() == name2) {
             num2 = i;
         }
     }
@@ -126,6 +123,48 @@ void swap(vector<Lifeguard> &rot){
     Lifeguard temp(rot[num1]);
     rot[num1] = rot[num2];
     rot[num2] = temp;
+
+    cout << "Swap Sucessfull" << endl;
+    ending();
+}
+
+//For the city of lakeland the last person to arrive gets on stand first. So the person added first would be last.
+void updateList(vector<Lifeguard> &rot) {
+
+    if(rot.size() > 1) {
+        for (int i = 0; i < rot.size(); i++) {
+            if (rot.size() <= 1) {
+                break;
+            }
+            rot[i].addTime(30);
+        }
+        sortList(rot);
+    }
+}
+
+void sortList(vector<Lifeguard> &rot) {
+    for (int i = 0; i < rot.size() - 1; i++) {
+        for (int j = 1; j < rot.size(); j++) {
+            if (rot[j].getHour() < rot[i].getHour()) {
+                SwapKnownLifeguards(rot, j, i);
+            } else if ((rot[j].getHour() == rot[i].getHour()) && (rot[j].getMin() < rot[i].getMin())) {
+                SwapKnownLifeguards(rot, j, i);
+            }
+        }
+    }
+}
+
+void SwapKnownLifeguards(vector<Lifeguard> &rot, int num1, int num2) {
+    Lifeguard temp(rot[num1]);
+    rot[num1] = rot[num2];
+    rot[num2] = temp;
+}
+
+// Use _getch() from conio.h to hold program till you press enter
+void ending() {
+    cout << "**Press Enter to Continue**";
+    _getch();
+    cout << endl;
 }
 
 #endif //LIFEGUARD_APP_LIBRARY_CPP

@@ -53,6 +53,14 @@ void Lifeguard::setTime(int hour, int min) {
     }
 }
 
+//Adds time for every guard, then updates the hours and min just in case
+void Lifeguard::addTime(int min){
+    timeMin += min;
+    setTime(timeHour, timeMin);
+}
+
+
+//Named it "getTime" but it really just puts the time into a nice format for printing
 string Lifeguard::getTime() {
     string temp;
 
@@ -64,6 +72,8 @@ string Lifeguard::getTime() {
     return temp;
 }
 
+
+//Added these so i could easily set rotation...might get rid of this
 int Lifeguard::getHour() {
     return timeHour;
 }
@@ -74,9 +84,8 @@ int Lifeguard::getMin() {
 
 string Lifeguard::printLifeguard() {
     string temp;
-    temp += getName();
-    temp += ": ";
-    temp += getTime();
+
+    temp = getName() + ": " + getTime();
 
     return temp;
 }

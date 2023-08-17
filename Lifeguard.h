@@ -2,12 +2,7 @@
 #include <vector>
 #include <string>
 #include <iomanip>
-
-#include <chrono>
-#include <ctime>
-#include <thread> // For thread
-#include <atomic> // For atomic
-#include <mutex>  // For mutex
+#include <conio.h>
 
 
 #ifndef LIFEGUARD_APP_LIFEGUARD_H
@@ -17,19 +12,24 @@ using namespace std;
 
 class Lifeguard {
 public:
+    //Contructors
     Lifeguard();
 
     Lifeguard(string num, int hour, int min);
 
     Lifeguard(Lifeguard *temp);
 
+    //Deconstructor
     ~Lifeguard();
 
+    //Getter and Setters
     void setName(string num);
 
     string getName();
 
     void setTime(int hour, int min);
+
+    void addTime(int min);
 
     string getTime();
 
@@ -37,6 +37,7 @@ public:
 
     int getMin();
 
+    //Prints the lifeguard for the list...This just makes it easy
     string printLifeguard();
 
 private:
