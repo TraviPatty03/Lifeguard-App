@@ -1,5 +1,8 @@
 #include "Lifeguard.h"
 
+Lifeguard::Lifeguard(){}
+
+
 Lifeguard::Lifeguard(string num, int hour, int min) {
 
     name = num;
@@ -7,6 +10,14 @@ Lifeguard::Lifeguard(string num, int hour, int min) {
 
     setTime(hour, min);
 }
+
+Lifeguard::Lifeguard(Lifeguard *temp){
+    name = temp->getName();
+    timeHour = temp->getHour();
+    timeMin = temp->getMin();
+}
+
+Lifeguard::~Lifeguard(){}
 
 void Lifeguard::setName(string num) {
     this->name = num;

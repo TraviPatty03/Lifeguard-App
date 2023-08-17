@@ -1,39 +1,8 @@
 #include "Lifeguard.h"
+#include "clockthread.cpp"
 
-struct TimeData {
-    int year;
-    int month;
-    int day;
-    int hour;
-    int minute;
-    int second;
-};
-
-// Function to update the time data continuously
-void updateClock(TimeData &timeData, std::mutex &dataMutex) {
-    while (true) {
-        // Get the current system time
-        auto now = std::chrono::system_clock::now();
-        std::time_t currentTime = std::chrono::system_clock::to_time_t(now);
-
-        // Convert to local time
-        std::tm localTime = *std::localtime(&currentTime);
-
-        // Lock the mutex before updating the time values
-        std::lock_guard<std::mutex> lock(dataMutex);
-
-        // Update the time values in the shared TimeData structure
-        timeData.year = localTime.tm_year + 1900;
-        timeData.month = localTime.tm_mon + 1;
-        timeData.day = localTime.tm_mday;
-        timeData.hour = localTime.tm_hour;
-        timeData.minute = localTime.tm_min;
-        timeData.second = localTime.tm_sec;
-
-        // Sleep for one second before updating the time data again
-        std::this_thread::sleep_for(std::chrono::seconds(1));
-    }
-}
+#ifndef LIFEGUARD_APP_LIBRARY_CPP
+#define LIFEGUARD_APP_LIBRARY_CPP
 
 void printtime() {
     auto now = std::chrono::system_clock::now();
@@ -44,19 +13,48 @@ void printtime() {
 }
 
 string opt() {
-    printtime();
     string input;
-    cout << "What do you want to do?\nList rotation\nAdd Lifeguard\nRemove lifeguard" << endl;
+    cout << "What do you want to do?\n"
+            "  List rotation (list)\n"
+            "  Add Lifeguard (add)\n"
+            "  Remove lifeguard (remove)\n"
+            "  Swap Lifeguards (swap)\n";
     cin >> input;
 
     return input;
 }
 
-void list(vector<Lifeguard> &rot) {
-    for (int i = 0; i < rot.size(); i++) {
-        cout << rot[i].printLifeguard() << endl;
+//void list(vector<Lifeguard> &rot) {
+//    printtime();
+//    cout << endl;
+//    for (int i = 0; i < rot.size(); i++) {
+//        cout << rot[i].printLifeguard() << endl;
+//    }
+//}
+
+void list(vector<Lifeguard> &rot){
+    char choice;
+
+    while (true) {
+        system("cls"); // Use "cls" instead of "clear" on Windows
+
+        // Print your constantly updating list here
+        printtime();
+        for (int i = 0; i < rot.size(); i++) {
+            cout << rot[i].printLifeguard() << endl;
+        }
+
+        std::this_thread::sleep_for(std::chrono::seconds(2));
+
+        // Check for user input to exit
+        if (std::cin.peek() != '\n') {
+            std::cout << "Press 'x' to exit or any other key to continue: ";
+            std::cin >> choice;
+            if (choice == 'x' || choice == 'X') {
+                break; // Exit the loop
+            }
+        }
     }
-    cout << endl;
 }
 
 void add(vector<Lifeguard> &rot, TimeData timeData) {
@@ -105,3 +103,29 @@ void remove(vector<Lifeguard> &rot) {
     }
     cout << endl;
 }
+
+void swap(vector<Lifeguard> &rot){
+    string name1, name2;
+    int num1, num2;
+
+    cout << "Who are we swapping?" << endl;
+    cin >> name1;
+
+    cout << "Who is the other Lifeguard?" << endl;
+    cin >> name2;
+
+    for(int i = 0; i < rot.size(); i++){
+        if(rot[i].getName() == name1){
+            num1 = i;
+        }
+        if(rot[i].getName() == name2){
+            num2 = i;
+        }
+    }
+
+    Lifeguard temp(rot[num1]);
+    rot[num1] = rot[num2];
+    rot[num2] = temp;
+}
+
+#endif //LIFEGUARD_APP_LIBRARY_CPP

@@ -1,5 +1,6 @@
 #include "Lifeguard.h"
 #include "library.cpp"
+#include "clockthread.cpp"
 
 using namespace std;
 
@@ -27,12 +28,8 @@ int main() {
         } else if (input == "remove") {
             remove(rotation);
         } else if (input == "end") {
-            break;
+            clockThread.join();
+            return 0;
         }
     }
-
-
-    clockThread.join();
-
-    return 0;
 }
