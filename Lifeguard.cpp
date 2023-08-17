@@ -44,18 +44,16 @@ void Lifeguard::setTime(int hour, int min) {
         timeMin = 0;
     }
 
-
-    if (timeHour >= 12) {
-        timeHour -= 12;
-        daytime = "PM";
-    } else {
-        daytime = "AM";
-    }
 }
 
 //Adds time for every guard, then updates the hours and min just in case
 void Lifeguard::addTime(int min){
     timeMin += min;
+    setTime(timeHour, timeMin);
+}
+
+void Lifeguard::subtractTime(int min){
+    timeMin -= min;
     setTime(timeHour, timeMin);
 }
 
@@ -67,7 +65,6 @@ string Lifeguard::getTime() {
     temp += to_string(timeHour);
     temp += ":";
     temp += to_string(timeMin);
-    temp += daytime;
 
     return temp;
 }

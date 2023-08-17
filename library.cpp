@@ -56,7 +56,7 @@ string opt() {
 void list(vector<Lifeguard> &rot) {
     cout << endl;
     for (int i = 0; i < rot.size(); i++) {
-        cout << rot[i].printLifeguard() << endl;
+        cout << setw(2) << rot[i].printLifeguard() << endl;
     }
     ending();
 }
@@ -69,6 +69,16 @@ void add(vector<Lifeguard> &rot, TimeData timeData) {
 
     cout << "What is the name of the lifeguard?" << endl;
     cin >> name;
+
+    // Check for duplicate names
+    for (Lifeguard guard : rot) {
+        if (guard.getName() == name) {
+            cout << "Error: Duplicate name. Lifeguard with this name already exists." << endl;
+            ending();
+            return; // Exit the function
+        }
+    }
+
     Lifeguard temp(name, timeData.hour, timeData.minute);
 
     rot.push_back(temp);
@@ -88,17 +98,25 @@ void remove(vector<Lifeguard> &rot) {
     cout << "Who needs to be removed?" << endl;
     cin >> name;
 
-    for (auto it = rot.begin(); it != rot.end(); ++it) {
+    auto it = rot.begin();
+    while (it != rot.end()) {
         if (it->getName() == name) {
-            rot.erase(it);
-            std::cout << "Instance removed successfully." << std::endl;
+            it = rot.erase(it);
+            cout << "Instance removed successfully." << endl;
             break; // Important: Exit the loop after erasing the element
+        } else {
+            ++it;
         }
     }
+
+    // Subtract 30 from all instances that occurred after the removed instance
+    for (; it != rot.end(); ++it) {
+        it->subtractTime(30); //method in Lifeguard class to subtract time
+    }
+
     cout << endl;
     ending();
 }
-
 
 //Swaps Two guards based on the names
 void swap(vector<Lifeguard> &rot) {
@@ -132,7 +150,7 @@ void swap(vector<Lifeguard> &rot) {
 void updateList(vector<Lifeguard> &rot) {
 
     if(rot.size() > 1) {
-        for (int i = 0; i < rot.size(); i++) {
+        for (int i = 0; i < rot.size() - 1; i++) {
             if (rot.size() <= 1) {
                 break;
             }

@@ -31,6 +31,8 @@ public:
 
     void addTime(int min);
 
+    void subtractTime(int min);
+
     string getTime();
 
     int getHour();
@@ -42,7 +44,6 @@ public:
 
 private:
     string name;
-    string daytime;
     int timeHour{};
     int timeMin{};
 };
