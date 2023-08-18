@@ -24,19 +24,19 @@ void ending();
 
 void swap(vector<Lifeguard> &rot);
 
-
-//Prints the time
-//curretnly not in use because i don't have a good place to put it yet
+// Prints the time
+// currently not in use because i don't have a good place to put it yet
 void printtime() {
-    auto now = std::chrono::system_clock::now();
+    auto now = chrono::system_clock::now();
 
-    std::time_t time = std::chrono::system_clock::to_time_t(now);
+    time_t time = chrono::system_clock::to_time_t(now);
+
     // Display the current time directly without formatting
-    std::cout << std::ctime(&time);
+    cout << ctime(&time);
 }
 
 
-//Function to print the choices as well as grab their choice
+// Function to print the choices as well as grab their choice
 string opt() {
     string input;
     cout << "What do you want to do?\n"
@@ -51,8 +51,8 @@ string opt() {
 }
 
 
-//Lists out the entire rotation
-//Showing the name of the lifeguard and when they get on
+// Lists out the entire rotation
+// Showing the name of the lifeguard and when they get on
 void list(vector<Lifeguard> &rot) {
     cout << endl;
     for (int i = 0; i < rot.size(); i++) {
@@ -62,8 +62,8 @@ void list(vector<Lifeguard> &rot) {
 }
 
 
-//Adds lifeguard to the rotation
-//Set's when they go on as well
+// Adds lifeguard to the rotation
+// Set's when they go on as well
 void add(vector<Lifeguard> &rot, TimeData timeData) {
     string name;
 
@@ -71,7 +71,7 @@ void add(vector<Lifeguard> &rot, TimeData timeData) {
     cin >> name;
 
     // Check for duplicate names
-    for (Lifeguard guard : rot) {
+    for (Lifeguard guard: rot) {
         if (guard.getName() == name) {
             cout << "Error: Duplicate name. Lifeguard with this name already exists." << endl;
             ending();
@@ -92,7 +92,7 @@ void add(vector<Lifeguard> &rot, TimeData timeData) {
 }
 
 
-//Removes lifeguard from the rotation
+// Removes lifeguard from the rotation
 void remove(vector<Lifeguard> &rot) {
     string name;
     cout << "Who needs to be removed?" << endl;
@@ -111,14 +111,14 @@ void remove(vector<Lifeguard> &rot) {
 
     // Subtract 30 from all instances that occurred after the removed instance
     for (; it != rot.end(); ++it) {
-        it->subtractTime(30); //method in Lifeguard class to subtract time
+        it->subtractTime(30); // method in Lifeguard class to subtract time
     }
 
     cout << endl;
     ending();
 }
 
-//Swaps Two guards based on the names
+// Swaps Two guards based on the names
 void swap(vector<Lifeguard> &rot) {
     string name1, name2;
     int num1, num2;
@@ -146,28 +146,44 @@ void swap(vector<Lifeguard> &rot) {
     ending();
 }
 
-//For the city of lakeland the last person to arrive gets on stand first. So the person added first would be last.
+// Updates everything
 void updateList(vector<Lifeguard> &rot) {
+    int numofguards = rot.size();
 
-    if(rot.size() > 1) {
-        for (int i = 0; i < rot.size() - 1; i++) {
-            if (rot.size() <= 1) {
-                break;
-            }
-            rot[i].addTime(30);
+    if (numofguards > 1) {
+        int adjustmentTime = 0;
+
+        if (numofguards == 3) {
+            adjustmentTime = 20;
+        } else if (numofguards >= 4) {
+            adjustmentTime = 15;
+        } else {
+            adjustmentTime = 30;
         }
+
+        for (Lifeguard &guard: rot) {
+            guard.addTime(adjustmentTime);
+        }
+
         sortList(rot);
     }
 }
 
 void sortList(vector<Lifeguard> &rot) {
-    for (int i = 0; i < rot.size() - 1; i++) {
-        for (int j = 1; j < rot.size(); j++) {
-            if (rot[j].getHour() < rot[i].getHour()) {
-                SwapKnownLifeguards(rot, j, i);
-            } else if ((rot[j].getHour() == rot[i].getHour()) && (rot[j].getMin() < rot[i].getMin())) {
-                SwapKnownLifeguards(rot, j, i);
+    int n = rot.size();
+
+    for (int i = 0; i < n - 1; i++) {
+        int minIndex = i;
+
+        for (int j = i + 1; j < n; j++) {
+            if (rot[j].getHour() < rot[minIndex].getHour() ||
+                (rot[j].getHour() == rot[minIndex].getHour() && rot[j].getMin() < rot[minIndex].getMin())) {
+                minIndex = j;
             }
+        }
+
+        if (minIndex != i) {
+            SwapKnownLifeguards(rot, i, minIndex);
         }
     }
 }

@@ -4,10 +4,12 @@
 #include <atomic> // For atomic
 #include <mutex>  // For mutex
 
+using namespace std;
+
 #ifndef LIFEGUARD_APP_CLOCKTHREAD_CPP
 #define LIFEGUARD_APP_CLOCKTHREAD_CPP
 
-//Structure so i can use the TimeData in other threads
+// Structure so i can use the TimeData in other threads
 struct TimeData {
     int year;
     int month;
@@ -21,14 +23,14 @@ struct TimeData {
 void updateClock(TimeData &timeData, std::mutex &dataMutex) {
     while (true) {
         // Get the current system time
-        auto now = std::chrono::system_clock::now();
-        std::time_t currentTime = std::chrono::system_clock::to_time_t(now);
+        auto now = chrono::system_clock::now();
+        time_t currentTime = chrono::system_clock::to_time_t(now);
 
         // Convert to local time
-        std::tm localTime = *std::localtime(&currentTime);
+        tm localTime = *localtime(&currentTime);
 
         // Lock the mutex before updating the time values
-        std::lock_guard<std::mutex> lock(dataMutex);
+        lock_guard<mutex> lock(dataMutex);
 
         // Update the time values in the shared TimeData structure
         timeData.year = localTime.tm_year + 1900;
@@ -39,7 +41,7 @@ void updateClock(TimeData &timeData, std::mutex &dataMutex) {
         timeData.second = localTime.tm_sec;
 
         // Sleep for one second before updating the time data again
-        std::this_thread::sleep_for(std::chrono::seconds(1));
+        this_thread::sleep_for(chrono::seconds(1));
     }
 }
 

@@ -12,7 +12,7 @@ int main() {
     // Create a mutex to synchronize access to the TimeData structure
     std::mutex dataMutex;
 
-    //Starts the clock thread and detaches it so that the clock runs seperately in the background
+    // Starts the clock thread and detaches it so that the clock runs seperately in the background
     thread clockThread(updateClock, std::ref(timeData), std::ref(dataMutex));
     clockThread.detach();
 

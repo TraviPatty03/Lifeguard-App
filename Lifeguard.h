@@ -12,22 +12,22 @@ using namespace std;
 
 class Lifeguard {
 public:
-    //Contructors
+    // Contructors
     Lifeguard();
 
-    Lifeguard(string num, int hour, int min);
+    Lifeguard(string num, int hour, int min, int guard = 1);
 
     Lifeguard(Lifeguard *temp);
 
-    //Deconstructor
+    // Deconstructor
     ~Lifeguard();
 
-    //Getter and Setters
+    // Getter and Setters
     void setName(string num);
 
     string getName();
 
-    void setTime(int hour, int min);
+    void setTime(int hour, int min, int numofguards = 1);
 
     void addTime(int min);
 
@@ -39,7 +39,7 @@ public:
 
     int getMin();
 
-    //Prints the lifeguard for the list...This just makes it easy
+    // Prints the lifeguard for the list...This just makes it easy
     string printLifeguard();
 
 private:
