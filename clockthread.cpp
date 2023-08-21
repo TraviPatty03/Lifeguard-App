@@ -9,7 +9,7 @@ using namespace std;
 #ifndef LIFEGUARD_APP_CLOCKTHREAD_CPP
 #define LIFEGUARD_APP_CLOCKTHREAD_CPP
 
-// Structure so i can use the TimeData in other threads
+// Structure to hold time data for synchronization between threads
 struct TimeData {
     int year;
     int month;
@@ -19,7 +19,7 @@ struct TimeData {
     int second;
 };
 
-// Function to update the time data continuously
+// Function to update the time data continuously in a separate thread
 void updateClock(TimeData &timeData, std::mutex &dataMutex)
 {
     while (true)
@@ -31,7 +31,7 @@ void updateClock(TimeData &timeData, std::mutex &dataMutex)
         // Convert to local time
         tm localTime = *localtime(&currentTime);
 
-        // Lock the mutex before updating the time values
+        // Lock the mutex before updating the time values to avoid conflicts
         lock_guard<mutex> lock(dataMutex);
 
         // Update the time values in the shared TimeData structure
@@ -47,4 +47,4 @@ void updateClock(TimeData &timeData, std::mutex &dataMutex)
     }
 }
 
-#endif //LIFEGUARD_APP_CLOCKTHREAD_CPP
+#endif // LIFEGUARD_APP_CLOCKTHREAD_CPP
