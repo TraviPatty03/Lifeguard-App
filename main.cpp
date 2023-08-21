@@ -35,7 +35,7 @@ int main()
         else if (input == "add")
         {
             // Call the function to add a lifeguard to rotation
-            add(rotation, timeData, rotationStarted);
+            add(rotation, timeData);
         }
         else if (input == "remove")
         {

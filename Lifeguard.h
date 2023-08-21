@@ -13,13 +13,7 @@ using namespace std;
 class Lifeguard {
 public:
     // Contructors
-    Lifeguard();
-
     Lifeguard(string num, int hour, int min, int guard = 2);
-
-    Lifeguard(string num);
-
-    Lifeguard(Lifeguard *temp);
 
     // Deconstructor
     ~Lifeguard();

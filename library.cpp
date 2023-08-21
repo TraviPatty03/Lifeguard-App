@@ -8,11 +8,9 @@ string opt();
 
 void list(vector<Lifeguard> &rot);
 
-void add(vector<Lifeguard> &rot, TimeData timeData, bool &firstLifeguardAdded);
+void add(vector<Lifeguard> &rot, TimeData timeData);
 
 void remove(vector<Lifeguard> &rot, int numofguards = 2);
-
-void updateList(vector<Lifeguard> &rot, int numofguards = 2);
 
 void ending();
 
@@ -22,12 +20,16 @@ void swap(vector<Lifeguard> &rot);
 string opt()
 {
     string input;
+
+    // Display the available choices
     cout << "What do you want to do?\n"
             "  List rotation (list)\n"
             "  Add Lifeguard (add)\n"
             "  Remove lifeguard (remove)\n"
             "  Swap Lifeguards (swap)\n"
             "  End Program (end)\n";
+
+    // Get the user's choice
     cin >> input;
 
     return input;
@@ -39,105 +41,101 @@ string opt()
 void list(vector<Lifeguard> &rot)
 {
     cout << endl;
-    for (int i = 0; i < rot.size(); i++)
+
+    // Iterate through the rotation and display lifeguard information
+    for (Lifeguard & i : rot)
     {
-        cout << rot[i].getName() << " - " << setw(2) << setfill('0') << rot[i].getHour() << ":" << setw(2)
-             << setfill('0') << rot[i].getMin() << endl;
+        // Display the lifeguard's name and their shift start time
+        cout << i.getName() << " - " << setw(2) << setfill('0') << i.getHour() << ":" << setw(2)
+             << setfill('0') << i.getMin() << endl;
     }
+
+    // Call the ending function
     ending();
 }
 
-// Adds lifeguard to the rotation
-// Set's when they go on as well
-void add(vector<Lifeguard> &rot, TimeData timeData, bool &firstLifeguardAdded)
-{
-
-    cout << timeData.hour << " " << timeData.minute << endl;
-
+// Add a new lifeguard to the rotation
+void add(vector<Lifeguard>& rot, TimeData timeData) {
     string name;
 
+    // Prompt user for lifeguard's name
     cout << "What is the name of the lifeguard?" << endl;
     cin >> name;
 
-    // Check for duplicate names
-    for (Lifeguard guard: rot)
-    {
-        if (guard.getName() == name)
-        {
+    // Check for duplicate name
+    for (const Lifeguard& guard : rot) {
+        if (guard.getName() == name) {
             cout << "Error: Duplicate name. Lifeguard with this name already exists." << endl;
             ending();
-            return; // Exit the function
+            return;
         }
     }
 
-    if (!firstLifeguardAdded)
-    {
-        int currentMinute = timeData.minute;
-        int roundedMinute = (currentMinute < 30) ? 0 : 30;
-        int shiftHour = currentMinute < 30 ? timeData.hour : timeData.hour + 1;
+    // Calculate rounded minute and hour
+    int roundedMinute = (timeData.minute < 15) ? 0 : (timeData.minute < 45) ? 30 : 0;
+    int roundedHour = (timeData.minute >= 45) ? timeData.hour + 1 : timeData.hour;
 
-        Lifeguard temp(name, shiftHour, roundedMinute);
-        rot.push_back(temp);
+    // Create a new lifeguard instance and add it to the rotation
+    Lifeguard temp(name, roundedHour, roundedMinute);
+    rot.push_back(temp);
 
-        firstLifeguardAdded = true;
-    } else
-    {
-        Lifeguard temp(name); // Assuming constructor without shift time
-        rot.push_back(temp);
-        updateList(rot);
+    // If there's more than one lifeguard, adjust their times
+    if (rot.size() > 1) {
+        for (int i = 0; i < rot.size() - 1; i++) {
+            rot[rot.size() - 1].addTime(30);
+        }
     }
 
-    cout << endl;
-
+    // Display success message
     cout << "Added Lifeguard to the List" << endl;
+
+    // Call the ending function
     ending();
 }
 
 // Removes lifeguard from the rotation
-void remove(vector<Lifeguard> &rot, int numofguards)
-{
+void remove(vector<Lifeguard>& rot, int numofguards) {
     string name;
+
+    // Prompt user for lifeguard's name to remove
     cout << "Who needs to be removed?" << endl;
     cin >> name;
 
+    // Iterate through the rotation to find and remove the lifeguard
     auto it = rot.begin();
-    while (it != rot.end())
-    {
-        if (it->getName() == name)
-        {
-            it = rot.erase(it);
+    while (it != rot.end()) {
+        if (it->getName() == name) {
+            it = rot.erase(it);  // Erase the lifeguard from the rotation
             cout << "Instance removed successfully." << endl;
             break; // Important: Exit the loop after erasing the element
-        } else
-        {
+        } else {
             ++it;
         }
     }
 
+    // Determine the time to subtract based on the number of guards
     int timeToSubtract = 0;
-    if (numofguards <= 2)
-    {
+    if (numofguards <= 2) {
         timeToSubtract = 30;
-    } else if (numofguards == 3)
-    {
+    } else if (numofguards == 3) {
         timeToSubtract = 20;
-    } else if (numofguards >= 4)
-    {
+    } else if (numofguards >= 4) {
         timeToSubtract = 15;
     }
 
-    for (; it != rot.end(); ++it)
-    {
+    // Iterate through the remaining lifeguards to subtract time
+    for (; it != rot.end(); ++it) {
         it->subtractTime(timeToSubtract); // method in Lifeguard class to subtract time
     }
 
     cout << endl;
+
+    // Call the ending function
     ending();
 }
 
 // Swaps Two guards based on the names
-void swap(vector<Lifeguard> &rot)
-{
+void swap(vector<Lifeguard>& rot) {
     string name1, name2;
 
     cout << "Who are we swapping?" << endl;
@@ -149,58 +147,30 @@ void swap(vector<Lifeguard> &rot)
     int index1 = -1;
     int index2 = -1;
 
-    for (int i = 0; i < rot.size(); i++)
-    {
-        if ((index1 != -1) && (index2 != -1))
-        {
+    // Find the indices of the lifeguards to be swapped
+    for (int i = 0; i < rot.size(); i++) {
+        if ((index1 != -1) && (index2 != -1)) {
             break; // Both indices found, no need to continue searching
         }
 
-        if (rot[i].getName() == name1 && index1 == -1)
-        {
+        if (rot[i].getName() == name1 && index1 == -1) {
             index1 = i;
         }
-        if (rot[i].getName() == name2 && index2 == -1)
-        {
+        if (rot[i].getName() == name2 && index2 == -1) {
             index2 = i;
         }
     }
 
-    if (index1 != -1 && index2 != -1)
-    {
+    // If both lifeguards are found, swap their names
+    if (index1 != -1 && index2 != -1) {
         string tempName = rot[index1].getName();
         rot[index1].setName(rot[index2].getName());
         rot[index2].setName(tempName);
 
-        cout << "Names Swapped Successfully" << endl;
+        cout << "Guards Swapped Successfully" << endl;
         ending();
-    } else
-    {
+    } else {
         cout << "One or both lifeguards not found." << endl;
-    }
-}
-
-void updateList(vector<Lifeguard> &rot, int numofguards)
-{
-    if (numofguards > 1)
-    {
-        int timeIncrement = 30; // Default time increment for most guards
-
-        if (numofguards == 3)
-        {
-            timeIncrement = 20; // Special time increment for the third guard
-        } else if (numofguards >= 4)
-        {
-            timeIncrement = 15; // Special time increment for the fourth guard and beyond
-        }
-
-        int totalTimeIncrement = 0;
-
-        for (Lifeguard &guard: rot)
-        {
-            guard.addTime(totalTimeIncrement); // Add the total time increment to each guard's shift time
-            totalTimeIncrement += timeIncrement;
-        }
     }
 }
 

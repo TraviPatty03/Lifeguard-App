@@ -1,9 +1,5 @@
 #include "Lifeguard.h"
 
-Lifeguard::Lifeguard()
-{}
-
-
 Lifeguard::Lifeguard(string num, int hour, int min, int guard)
 {
 
@@ -11,18 +7,6 @@ Lifeguard::Lifeguard(string num, int hour, int min, int guard)
     cout << endl;
 
     setShiftTime(hour, min);
-}
-
-Lifeguard::Lifeguard(string num)
-{
-    setName(num);
-}
-
-Lifeguard::Lifeguard(Lifeguard *temp)
-{
-    name = temp->getName();
-    timeHour = temp->getHour();
-    timeMin = temp->getMin();
 }
 
 Lifeguard::~Lifeguard()
