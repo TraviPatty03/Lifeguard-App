@@ -1,118 +1,79 @@
 #include "Lifeguard.h"
 
-Lifeguard::Lifeguard() {}
+Lifeguard::Lifeguard()
+{}
 
 
-Lifeguard::Lifeguard(string num, int hour, int min, int guard) {
+Lifeguard::Lifeguard(string num, int hour, int min, int guard)
+{
 
     name = num;
     cout << endl;
 
-    setTime(hour, min, guard);
+    setShiftTime(hour, min);
 }
 
-Lifeguard::Lifeguard(Lifeguard *temp) {
+Lifeguard::Lifeguard(string num)
+{
+    setName(num);
+}
+
+Lifeguard::Lifeguard(Lifeguard *temp)
+{
     name = temp->getName();
     timeHour = temp->getHour();
     timeMin = temp->getMin();
 }
 
-Lifeguard::~Lifeguard() {}
+Lifeguard::~Lifeguard()
+{}
 
-void Lifeguard::setName(string num) {
+void Lifeguard::setName(string num)
+{
     this->name = num;
 }
 
-string Lifeguard::getName() {
+string Lifeguard::getName() const
+{
     return name;
 }
 
-void Lifeguard::setTime(int hour, int min, int numofguards) {
-    timeHour = hour;
-    int tempMin = min;
-
-    if (tempMin >= 60) {
-        timeHour += tempMin / 60;
-        tempMin %= 60;
-    }
-
-    switch (numofguards) {
-        case 1:
-        case 2:
-            if (tempMin < 15) {
-                timeMin = 0;
-            } else if (tempMin < 45) {
-                timeMin = 30;
-            } else {
-                timeHour++;
-                timeMin = 0;
-            }
-            break;
-        ;;
-        case 3:
-            if (tempMin < 10 || tempMin >= 50) {
-                timeMin = 0;
-            } else if (tempMin < 30) {
-                timeMin = 20;
-            } else {
-                timeMin = 40;
-            }
-            break;
-        ;;
-        case 4:
-        case 5:
-        case 6:
-            if (tempMin < 7 || tempMin >= 52) {
-                timeMin = 0;
-            } else if (tempMin < 22) {
-                timeMin = 15;
-            } else if (tempMin < 37) {
-                timeMin = 30;
-            } else {
-                timeMin = 45;
-            }
-            break;
-        ;;
-    }
+void Lifeguard::setShiftTime(int hours, int minutes)
+{
+    timeHour = hours;
+    timeMin = minutes;
 }
-
-//Adds time for every guard, then updates the hours and min just in case
-void Lifeguard::addTime(int min) {
-    timeMin += min;
-    setTime(timeHour, timeMin);
-}
-
-void Lifeguard::subtractTime(int min) {
-    timeMin -= min;
-    setTime(timeHour, timeMin);
-}
-
-
-//Named it "getTime" but it really just puts the time into a nice format for printing
-string Lifeguard::getTime() {
-    string temp;
-
-    temp += to_string(timeHour);
-    temp += ":";
-    temp += to_string(timeMin);
-
-    return temp;
-}
-
 
 //Added these so i could easily set rotation...might get rid of this
-int Lifeguard::getHour() {
+int Lifeguard::getHour() const
+{
     return timeHour;
 }
 
-int Lifeguard::getMin() {
+int Lifeguard::getMin() const
+{
     return timeMin;
 }
 
-string Lifeguard::printLifeguard() {
-    string temp;
+void Lifeguard::addTime(int minutes)
+{
+    int totalMinutes = timeHour * 60 + timeMin;
+    totalMinutes += minutes;
 
-    temp = getName() + ": " + getTime();
+    timeHour = totalMinutes / 60;
+    timeMin = totalMinutes % 60;
+}
 
-    return temp;
+void Lifeguard::subtractTime(int minutes)
+{
+    int totalMinutes = timeHour * 60 + timeMin;
+    totalMinutes -= minutes;
+
+    if (totalMinutes < 0)
+    {
+        totalMinutes += 24 * 60; // Add a day's worth of minutes
+    }
+
+    timeHour = totalMinutes / 60;
+    timeMin = totalMinutes % 60;
 }

@@ -20,8 +20,10 @@ struct TimeData {
 };
 
 // Function to update the time data continuously
-void updateClock(TimeData &timeData, std::mutex &dataMutex) {
-    while (true) {
+void updateClock(TimeData &timeData, std::mutex &dataMutex)
+{
+    while (true)
+    {
         // Get the current system time
         auto now = chrono::system_clock::now();
         time_t currentTime = chrono::system_clock::to_time_t(now);

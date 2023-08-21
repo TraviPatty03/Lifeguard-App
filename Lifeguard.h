@@ -15,7 +15,9 @@ public:
     // Contructors
     Lifeguard();
 
-    Lifeguard(string num, int hour, int min, int guard = 1);
+    Lifeguard(string num, int hour, int min, int guard = 2);
+
+    Lifeguard(string num);
 
     Lifeguard(Lifeguard *temp);
 
@@ -25,22 +27,17 @@ public:
     // Getter and Setters
     void setName(string num);
 
-    string getName();
+    string getName() const;
 
-    void setTime(int hour, int min, int numofguards = 1);
+    void setShiftTime(int hours, int minutes);
 
-    void addTime(int min);
+    int getHour() const;
 
-    void subtractTime(int min);
+    int getMin() const;
 
-    string getTime();
+    void addTime(int minutes);
 
-    int getHour();
-
-    int getMin();
-
-    // Prints the lifeguard for the list...This just makes it easy
-    string printLifeguard();
+    void subtractTime(int minutes);
 
 private:
     string name;

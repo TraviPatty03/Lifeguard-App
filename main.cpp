@@ -4,7 +4,8 @@
 
 using namespace std;
 
-int main() {
+int main()
+{
 
     // Create a TimeData structure to hold the time values
     TimeData timeData;
@@ -18,17 +19,27 @@ int main() {
 
     vector<Lifeguard> rotation;
 
-    while (true) {
+    bool rotationStarted = false;
+
+    while (true)
+    {
 
         string input = opt();
 
-        if (input == "list") {
+        if (input == "list")
+        {
             list(rotation);
-        } else if (input == "add") {
-            add(rotation, timeData);
-        } else if (input == "remove") {
+        } else if (input == "add")
+        {
+            add(rotation, timeData, rotationStarted);
+        } else if (input == "remove")
+        {
             remove(rotation);
-        } else if (input == "end") {
+        } else if (input == "swap")
+        {
+            swap(rotation);
+        } else if (input == "end")
+        {
             return 0;
         }
     }
