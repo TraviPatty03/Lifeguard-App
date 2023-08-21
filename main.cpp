@@ -24,6 +24,10 @@ int main()
 
     while (true)
     {
+        // Issue with this is that it's the first in the line. I think i need to put this in it's own thread
+//        if(timeData.minute == 30 || timeData.minute == 0 || timeData.minute == 60)
+//            UpdateList(rotation, timeData);
+
         // Get user input for operation
         string input = opt();
 
@@ -31,23 +35,22 @@ int main()
         {
             // Call the function to list lifeguards in rotation
             list(rotation);
-        }
-        else if (input == "add")
+        } else if (input == "update")
+        {
+            UpdateList(rotation, timeData);
+        } else if (input == "add")
         {
             // Call the function to add a lifeguard to rotation
             add(rotation, timeData);
-        }
-        else if (input == "remove")
+        } else if (input == "remove")
         {
             // Call the function to remove a lifeguard from rotation
             remove(rotation);
-        }
-        else if (input == "swap")
+        } else if (input == "swap")
         {
             // Call the function to swap lifeguards in rotation
             swap(rotation);
-        }
-        else if (input == "end")
+        } else if (input == "end")
         {
             // Exit the program
             return 0;

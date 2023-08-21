@@ -10,7 +10,11 @@ void list(vector<Lifeguard> &rot);
 
 void add(vector<Lifeguard> &rot, TimeData timeData);
 
+void AddByName(vector<Lifeguard>& rot, TimeData timeData, string name);
+
 void remove(vector<Lifeguard> &rot, int numofguards = 2);
+
+void UpdateList(vector<Lifeguard>& rot, TimeData timeData, int numofguards = 1);
 
 void ending();
 
@@ -24,6 +28,7 @@ string opt()
     // Display the available choices
     cout << "What do you want to do?\n"
             "  List rotation (list)\n"
+            "  Update List (update)\n"
             "  Add Lifeguard (add)\n"
             "  Remove lifeguard (remove)\n"
             "  Swap Lifeguards (swap)\n"
@@ -93,6 +98,39 @@ void add(vector<Lifeguard>& rot, TimeData timeData) {
     ending();
 }
 
+// Add a new lifeguard to the rotation
+void AddByName(vector<Lifeguard>& rot, TimeData timeData, string name)
+{
+
+    // Check for duplicate name
+    for (const Lifeguard &guard: rot)
+    {
+        if (guard.getName() == name)
+        {
+            cout << "Error: Duplicate name. Lifeguard with this name already exists." << endl;
+            ending();
+            return;
+        }
+    }
+
+    // Calculate rounded minute and hour
+    int roundedMinute = (timeData.minute < 15) ? 0 : (timeData.minute < 45) ? 30 : 0;
+    int roundedHour = (timeData.minute >= 45) ? timeData.hour + 1 : timeData.hour;
+
+    // Create a new lifeguard instance and add it to the rotation
+    Lifeguard temp(name, roundedHour, roundedMinute);
+    rot.push_back(temp);
+
+    // If there's more than one lifeguard, adjust their times
+    if (rot.size() > 1)
+    {
+        for (int i = 0; i < rot.size() - 1; i++)
+        {
+            rot[rot.size() - 1].addTime(30);
+        }
+    }
+}
+
 // Removes lifeguard from the rotation
 void remove(vector<Lifeguard>& rot, int numofguards) {
     string name;
@@ -131,6 +169,38 @@ void remove(vector<Lifeguard>& rot, int numofguards) {
     cout << endl;
 
     // Call the ending function
+    ending();
+}
+
+void UpdateList(vector<Lifeguard>& rot, TimeData timeData, int numofguards) {
+    if (rot.empty()) {
+        cout << "Rotation is empty." << endl;
+        return;
+    }
+
+    Lifeguard removedGuard = rot.front(); // Store the first lifeguard
+    rot.erase(rot.begin()); // Remove the first lifeguard from the rotation
+
+    // Determine the time to subtract based on the number of guards
+    int timeToSubtract = 0;
+    if (numofguards <= 2) {
+        timeToSubtract = 30;
+    } else if (numofguards == 3) {
+        timeToSubtract = 20;
+    } else if (numofguards >= 4) {
+        timeToSubtract = 15;
+    }
+
+    // Subtract time from the remaining lifeguards
+    for (Lifeguard &guard : rot) {
+        guard.subtractTime(timeToSubtract); // Subtract time from each remaining guard
+    }
+
+
+    AddByName(rot, timeData, removedGuard.getName());
+
+    cout << "Updated the rotation." << endl;
+
     ending();
 }
 
