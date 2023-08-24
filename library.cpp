@@ -27,12 +27,12 @@ string opt()
 
     // Display the available choices
     cout << "What do you want to do?\n"
-            "  List rotation (list)\n"
-            "  Update List (update)\n"
-            "  Add Lifeguard (add)\n"
-            "  Remove lifeguard (remove)\n"
+            "  List rotation (list)  "
+            "  End Program (end)\n"
+            "  Update List (update)  "
             "  Swap Lifeguards (swap)\n"
-            "  End Program (end)\n";
+            "  Add Lifeguard (add)  "
+            "  Remove lifeguard (remove)\n";
 
     // Get the user's choice
     cin >> input;
